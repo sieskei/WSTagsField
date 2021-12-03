@@ -85,7 +85,10 @@ open class WSTagView: UIView, UITextInputTraits {
             else if !selected && isFirstResponder {
                 _ = resignFirstResponder()
             }
-            updateContent(animated: true)
+            
+            if oldValue != selected {
+                updateContent(animated: true)
+            }
         }
     }
 
@@ -139,27 +142,15 @@ open class WSTagView: UIView, UITextInputTraits {
     }
 
     internal func updateContent(animated: Bool) {
-        guard animated else {
-            updateColors()
-            return
-        }
-
-        UIView.animate(
-            withDuration: 0.2,
-            animations: { [weak self] in
-                self?.updateColors()
-                if self?.selected ?? false {
-                    self?.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
-                }
-            },
-            completion: { [weak self] _ in
-                if self?.selected ?? false {
-                    UIView.animate(withDuration: 0.1) { [weak self] in
-                        self?.transform = CGAffineTransform.identity
-                    }
+        if animated {
+            UIView.animate(withDuration: 0.15) { [weak self] in
+                if let this = self {
+                    this.updateColors()
                 }
             }
-        )
+        } else {
+            updateColors()
+        }
     }
 
     // MARK: - Size Measurements
